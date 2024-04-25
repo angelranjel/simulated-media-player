@@ -107,7 +107,19 @@ class LinkedList:
         any or None
             The data at the specified index or None if index is invalid.
         """
-        pass
+        if index < 0 or index >= self.size:
+            return None
+        
+        if index < self.size // 2:
+            current_position = self.dummyHead.next
+            for _ in range(index):
+                current_position = current_position.next
+        else:
+            current_position = self.dummyTail.prev
+            for _ in range(self.size - index - 1):
+                current_position = current_position.prev     
+            
+        return current_position.data
 
 
     def appendLeft(self, data):
@@ -127,7 +139,12 @@ class LinkedList:
         -------
         None
         """
-        pass
+        new_node = Node(data)
+        new_node.next = self.dummyHead.next
+        new_node.prev = self.dummyHead
+        self.dummyHead.next.prev = new_node
+        self.dummyHead.next = new_node
+        self.size += 1
 
 
     def append(self, data):
@@ -146,7 +163,12 @@ class LinkedList:
         -------
         None
         """
-        pass
+        new_node = Node(data)
+        new_node.next = self.dummyTail
+        new_node.prev = self.dummyTail.prev
+        self.dummyTail.prev.next = new_node
+        self.dummyTail.prev = new_node
+        self.size += 1
 
     
     def popLeft(self):
@@ -164,7 +186,16 @@ class LinkedList:
         None 
             If the linked list is empty.
         """
-        pass
+        if self.size == 0:
+            return None
+       
+        first_node = self.dummyHead.next
+        result = first_node.data
+        self.dummyHead.next = first_node.next
+        first_node.next.prev = self.dummyHead
+        self.size -= 1
+        
+        return result
 
 
     def pop(self):
@@ -181,7 +212,16 @@ class LinkedList:
         None 
             If the linked list is empty.
         """
-        pass
+        if self.size == 0:
+            return None
+        
+        last_node = self.dummyTail.prev
+        result = last_node.data
+        self.dummyTail.prev = last_node.prev
+        last_node.prev.next = self.dummyTail
+        self.size -= 1
+        
+        return result
             
 
     def addAtIndex(self, index: int, data: int):
@@ -202,7 +242,28 @@ class LinkedList:
         bool
             True if the addition was successful, False otherwise.
         """
-        pass
+        if index < 0 or index > self.size:
+            return False
+        
+        new_node = Node(data)
+        if index < self.size // 2:
+            current = self.dummyHead
+            for _ in range(index):
+                current = current.next
+            new_node.next = current.next
+            new_node.prev = current
+        else:
+            current = self.dummyTail
+            for _ in range(self.size - index):
+                current = current.prev
+            new_node.prev = current.prev
+            new_node.next = current
+        
+        new_node.prev.next = new_node
+        new_node.next.prev = new_node
+        self.size += 1
+        
+        return True
 
 
     def deleteAtIndex(self, index: int):
@@ -223,7 +284,23 @@ class LinkedList:
         bool
             True if the addition was successful, False otherwise.
         """
-        pass
+        if index < 0 or index >= self.size:
+            return False
+        
+        if index < self.size // 2:
+            current = self.dummyHead.next
+            for _ in range(index):
+                current = current.next
+        else:
+            current = self.dummyTail.prev
+            for _ in range(self.size - index - 1):
+                current = current.prev
+        
+        current.prev.next = current.next
+        current.next.prev = current.prev
+        self.size -= 1
+        
+        return True
 
 
     def printFromFront(self):
@@ -238,7 +315,14 @@ class LinkedList:
         secondElement 
         ...
         """
-        pass
+        if self.size == 0:
+            print("Link list is empty.")
+            return
+        
+        current = self.dummyHead.next
+        while current != self.dummyTail:
+            print(current.data)
+            current = current.next
 
 
     def printFromBack(self):
@@ -247,7 +331,14 @@ class LinkedList:
         If the linked list is empty, print exactly this string "Link list is empty."
         Follow the same format of printFromFront()
         """
-        pass
+        if self.size == 0:
+            print("Link list is empty.")
+            return
+        
+        current = self.dummyTail.prev
+        while current != self.dummyHead:
+            print(current.data)
+            current = current.prev
 
 
     def _isNodeUnbound(self,node):
@@ -287,7 +378,9 @@ class LinkedList:
         data or None
             The data of the first node in the list, or None if the list is empty.
         """
-        pass
+        if self.size == 0:
+            return None
+        return self.dummyHead.next.data
 
     def getBack(self) -> int:
         """
@@ -298,7 +391,9 @@ class LinkedList:
         data or None
             The data of the last node in the list, or None if the list is empty.
         """
-        pass
+        if self.size == 0:
+            return None
+        return self.dummyTail.prev.data
     
     def getSize(self) -> int:
         """
@@ -312,7 +407,7 @@ class LinkedList:
         int
             The number of elements in linked list.
         """
-        pass
+        return self.size
 
 if __name__ == "__main__":
     pass

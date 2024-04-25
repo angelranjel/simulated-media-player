@@ -20,7 +20,8 @@ class Player:
         """
         Initializes the Player with an empty playlist and None as currentMediaNode.
         """
-        
+        self.playlist = LinkedList
+        self.currentMediaNode = None
 
     def addMedia(self, media):
         """
@@ -33,7 +34,9 @@ class Player:
         media : Media | Track | Movie 
             The media to add to the playlist.
         """
-        
+        self.playlist.append(media)
+        if not self.currentMediaNode:
+            self.currentMediaNode = self.playlist.dummyHead.next
 
     def removeMedia(self, index) -> bool:
         """
