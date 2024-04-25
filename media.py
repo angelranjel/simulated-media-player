@@ -39,7 +39,7 @@ class Media:
 
         For example, “Bridget Jones's Diar (Unabridged) by Helen Fielding (2012)”
         """
-        
+        return f"{self.title} by f{self.artist} ({self.releaseDate})"
 
     def length(self):
         """
@@ -58,12 +58,13 @@ class Media:
         Format:
         <media title> by <artist> (<release date>)
         """
+        return print(f"{self.title} by {self.artist} ({self.releaseDate})")
 
 
 class Track(Media):
     """ A class representing a music track."""
     
-    def __init__(self):
+    def __init__(self, album = "No Album", genre = "No Genre", duration =  0):
         """
         Constructs all the necessary attributes for the Track object.
         remeber to use super().__init__(some parameters).
@@ -95,6 +96,14 @@ class Track(Media):
         self.artist 
         etc.        
         """
+        super().__init__(title= "No Title", artist= "No Artist", releaseDate= "No Release Data", url= "No URL")
+        self.title 
+        self.artist 
+        self.releaseDate 
+        self.url
+        self.album = album
+        self.genre = genre
+        self.duration = duration
         
 
     def info(self):
@@ -107,6 +116,7 @@ class Track(Media):
         For example “Hey Jude by The Beatles (1968) [Rock]”
 
         """
+        return f"{self.title} by f{self.artist} - {self.album} ({self.releaseDate}) [{self.genre}]"
         
 
     def length(self):
@@ -115,7 +125,7 @@ class Track(Media):
 
         Notice the length in the provide json might not in seconds
         """
-        
+        return round(self.duration/1000)
 
     def play(self):
         """
@@ -126,12 +136,13 @@ class Track(Media):
         Format:
         <music title> by <artist> - <music album> (<release date>) [<genre>] length: <length> sec
         """
+        return print(f"{self.title} by f{self.artist} - {self.album} ({self.releaseDate}) [{self.genre}] length: {self.length} sec")
 
 
 class Movie(Media):
     """ A class representing a movie."""
     
-    def __init__(self):
+    def __init__(self, rating = "No Rating", movieLength = 0):
         """
         Constructs all the necessary attributes for the Movie object.
         remeber to use super().__init__(some parameters).
@@ -160,6 +171,14 @@ class Movie(Media):
         self.artist 
         etc.
         """
+        super().__init__(title= "No Title", artist= "No Artist", releaseDate= "No Release Data", url= "No URL")
+        self.title
+        self.artist
+        self.releaseDate
+        self.url
+        self.rating = rating
+        self.movieLength = movieLength
+
         
 
     def info(self):
@@ -172,6 +191,8 @@ class Movie(Media):
 
         For example “Jaws by Steven Speilberg (1975) [PG]”
         """
+        return f"{self.title} by f{self.artist} ({self.releaseDate}) [{self.rating}]"
+
         
 
     def length(self):
@@ -180,6 +201,7 @@ class Movie(Media):
 
         Notice the length in the provide json might not in minutes
         """
+        return round((self.movieLength/1000)/60)
         
 
     def play(self):
@@ -191,3 +213,4 @@ class Movie(Media):
         Format:
         <movie title> by <artist> (<release date>) [<movie rating>] length: <length> mins
         """
+        return print(f"{self.title} by f{self.artist} ({self.releaseDate}) [{self.rating}] length: {self.length} mins")
