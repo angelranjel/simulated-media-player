@@ -111,15 +111,15 @@ class LinkedList:
             return None
         
         if index < self.size // 2:
-            current_position = self.dummyHead.next
+            current_node = self.dummyHead.next
             for _ in range(index):
-                current_position = current_position.next
+                current_node = current_node.next
         else:
-            current_position = self.dummyTail.prev
+            current_node = self.dummyTail.prev
             for _ in range(self.size - index - 1):
-                current_position = current_position.prev     
+                current_node = current_node.prev     
             
-        return current_position.data
+        return current_node.data
 
 
     def appendLeft(self, data):
@@ -366,7 +366,13 @@ class LinkedList:
         check if the next attribute of the node's previous node is 
         the node.
         """
-        pass
+        if not node or node == self.dummyHead or node == self.dummyTail:
+            return False
+
+        forward_link_broken = node.prev and node.prev.next != node
+        backward_link_broken = node.next and node.next.prev != node
+
+        return forward_link_broken or backward_link_broken
 
     
     def getFront(self) -> int:

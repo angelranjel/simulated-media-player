@@ -20,7 +20,7 @@ class Player:
         """
         Initializes the Player with an empty playlist and None as currentMediaNode.
         """
-        self.playlist = LinkedList
+        self.playlist = LinkedList()
         self.currentMediaNode = None
 
     def addMedia(self, media):
@@ -55,7 +55,22 @@ class Player:
         bool
             True if the media was successfully removed, False otherwise.
         """
-        
+        if index < 0 or index >= self.playlist.size:
+            return False
+
+        current = self.playlist.dummyHead.next
+        for i in range(index):
+            current = current.next
+
+        if self.currentMediaNode == current:
+            self.currentMediaNode = current.next if current.next != self.playlist.dummyTail else None
+
+        current.prev.next = current.next
+        current.next.prev = current.prev
+        self.playlist.size -= 1
+
+        return True
+
 
     def next(self) -> bool:
         """
@@ -67,7 +82,10 @@ class Player:
         bool
             True if the player successfully moved to the next media, False otherwise.
         """
-        
+        if self.currentMediaNode and self.currentMediaNode.next != self.playlist.dummyTail:
+            self.currentMediaNode = self.currentMediaNode.next
+            return True
+        return False
 
     def prev(self) -> bool:
         """
@@ -79,7 +97,10 @@ class Player:
         bool
             True if the player successfully moved to the previous media, False otherwise.
         """
-        
+        if self.currentMediaNode and self.currentMediaNode.prev != self.playlist.dummyHead:
+            self.currentMediaNode = self.currentMediaNode.prev
+            return True
+        return False
 
     def resetCurrentMediaNode(self) -> bool:
         """
@@ -91,7 +112,10 @@ class Player:
         bool
             True if the current media was successfully reset, False otherwise.
         """
-        
+        if self.playlist.size > 0:
+            self.currentMediaNode = self.playlist.dummyHead.next
+            return True
+        return False
 
     def play(self):
         """
@@ -101,7 +125,10 @@ class Player:
         media. If the currentMediaNode is None or its data is None, 
         print "The current media is empty.". 
         """
-        
+        if self.currentMediaNode and self.currentMediaNode.data:
+            self.currentMediaNode.data.play()
+        else:
+            print("The current media is empty.")
 
     def playForward(self):
         """
@@ -111,7 +138,13 @@ class Player:
         format in linked list)
         If the playlist is empty, print "Playlist is empty.". 
         """
-        
+        if self.playlist.size == 0:
+            print("Playlist is empty.")
+        else:
+            current = self.playlist.dummyHead.next
+            while current != self.playlist.dummyTail:
+                current.data.play()
+                current = current.next
 
     def playBackward(self):
         """
@@ -121,7 +154,13 @@ class Player:
         format in linked list)
         If the playlist is empty, print this string "Playlist is empty.". 
         """
-        
+        if self.playlist.size == 0:
+            print("Playlist is empty.")
+        else:
+            current = self.playlist.dummyTail.prev
+            while current != self.playlist.dummyHead:
+                current.data.play()
+                current = current.prev
 
     def loadFromJson(self, fileName):
         """
@@ -143,3 +182,38 @@ class Player:
         filename : str
             The name of the JSON file to load media from.
         """
+        with open(fileName, 'r') as file:
+            data = json.load(file)
+            for item in data:
+                media = Media(
+                    title=item.get('collectionName'),
+                    artist=item.get('artistName'),
+                    releaseDate=item.get('releaseDate'),
+                    url=item.get('collectionViewUrl')
+                )
+                
+                if item.get('wrapperType') == 'track':
+                    if item.get('kind') == 'feature-movie':
+                        media = Movie(
+                            title=item.get('trackName', 'No Title'),
+                            artist=item.get('artistName', 'No Artist'),
+                            releaseDate=item.get('releaseDate', 'No Release Date'),
+                            url=item.get('trackViewUrl', 'No URL'),
+                            rating=item.get('contentAdvisoryRating', 'No Rating'),
+                            movieLength=item.get('trackTimeMillis', 0)
+                        )
+                    elif item.get('kind') == 'song':
+                        media = Track(
+                            title=item.get('trackName', 'No Title'),
+                            artist=item.get('artistName', 'No Artist'),
+                            releaseDate=item.get('releaseDate', 'No Release Date'),
+                            url=item.get('trackViewUrl', 'No URL'),
+                            album=item.get('collectionName', 'No Album'),
+                            genre=item.get('primaryGenreName', 'No Genre'),
+                            duration=item.get('trackTimeMillis', 0)
+                        )
+
+                self.addMedia(media)
+
+        if self.playlist.size > 0:
+            self.resetCurrentMediaNode()

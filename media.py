@@ -206,3 +206,6 @@ class Movie(Media):
         <movie title> by <artist> (<release date>) [<movie rating>] length: <length> mins
         """
         return print(f"{self.title} by {self.artist} ({self.releaseDate}) [{self.rating}] length: {self.length()} mins")
+
+if __name__ == "__main__":
+    pass
